@@ -1,7 +1,27 @@
-const Dashboard = () => {
+"use client";
+import { useOrganization } from "@clerk/nextjs";
+import { EmptyOrg } from "./_components/empty-org";
+
+
+interface DashboardProps {
+	searchParams?: {
+		search?: string;
+		favorites?: string;
+	};
+};
+
+const Dashboard = ({
+	searchParams,
+}: DashboardProps) => {
+	const { organization } = useOrganization();
 	return (
-		<div>
-			Dashboard root
+		<div className="flex-1 h-[calc(100% - 80px)] p-6">
+			{JSON.stringify(searchParams)}
+			{!organization ? (
+				<EmptyOrg />
+			) : (
+				<p>Board List</p>
+			)}
 		</div>
 	);
 };
