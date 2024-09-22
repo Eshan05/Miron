@@ -11,7 +11,7 @@ const DashboardLayout = ({
   return (
     <main className="h-full">
       <Sidebar />
-      <div className="h-full pl-[16px]">
+      <div className="h-full pl-[60px]">
         <div className="flex gap-x-3 h-full">
           <OrgSidebar />
           <div className="h-full flex-1">
