@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useOrganization } from "@clerk/nextjs";
 import { title } from "process";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import { toast } from "sonner";
 export const EmptyBoards = () => {
   const { organization } = useOrganization();
   const { mutate, pending } = useApiMutation(api.board.create);
@@ -14,6 +15,14 @@ export const EmptyBoards = () => {
       orgId: organization.id,
       title: "Untitled",
     })
+      .then((id) => {
+        // TODO: Redirect to board/{id}
+        toast.success("Board created")
+      })
+      .catch((error) => {
+        toast.error("Error creating board")
+        console.error(error)
+      })
   }
   return (
     <div className="h-full flex flex-col items-center justify-center">
