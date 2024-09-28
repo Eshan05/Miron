@@ -11,6 +11,7 @@ export const Loading = () => {
       <InfoSkeleton />
       <ParticipantsSkeleton />
       <ToolbarSkeleton />
+
     </main>
   );
 }
