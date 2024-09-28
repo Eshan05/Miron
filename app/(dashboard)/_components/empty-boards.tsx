@@ -6,7 +6,9 @@ import { useOrganization } from "@clerk/nextjs";
 import { title } from "process";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 export const EmptyBoards = () => {
+  const router = useRouter();
   const { organization } = useOrganization();
   const { mutate, pending } = useApiMutation(api.board.create);
   const onClick = () => {
@@ -17,7 +19,8 @@ export const EmptyBoards = () => {
     })
       .then((id) => {
         // TODO: Redirect to board/{id}
-        toast.success("Board created")
+        toast.success("Board created");
+        router.push(`/board/${id}`)
       })
       .catch((error) => {
         toast.error("Error creating board")
