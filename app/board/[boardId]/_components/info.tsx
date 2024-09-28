@@ -1,6 +1,9 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
+
 import { Menu } from "lucide-react";
 import { Poppins } from "next/font/google";
 import Image from "next/image";
@@ -9,27 +12,19 @@ import Link from "next/link";
 import { Actions } from "@/components/actions";
 import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
-import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
 import { useRenameModal } from "@/store/use-rename-modal";
 
 const TabSeparator = () => <div className="text-neutral-300 px-1.5">|</div>;
-
 const font = Poppins({
   subsets: ["latin"],
   weight: ["600"],
 });
 
-type InfoProps = {
-  boardId: string;
-};
-
+type InfoProps = { boardId: string; };
 export const Info = ({ boardId }: InfoProps) => {
   const { onOpen } = useRenameModal();
-  const data = useQuery(api.board.get, {
-    id: boardId as Id<"boards">,
-  });
+  const data = useQuery(api.board.get, { id: boardId as Id<"boards">, });
 
   if (!data) return <InfoSkeleton />;
 
@@ -41,8 +36,8 @@ export const Info = ({ boardId }: InfoProps) => {
             <Image
               src="/logo.svg"
               alt="Miro Clone Logo"
-              height={40}
-              width={40}
+              height={36}
+              width={36}
             />
             <span
               className={cn(
