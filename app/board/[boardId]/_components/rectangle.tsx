@@ -1,3 +1,4 @@
+import { colorToCSS } from "@/lib/utils";
 import type { RectangleLayer } from "@/types/canvas";
 
 type RectangleProps = {
@@ -26,8 +27,8 @@ export const Rectangle = ({
       width={width}
       height={height}
       strokeWidth={1}
-      fill="#000"
-      stroke="transparent"
+      fill={fill ? colorToCSS(fill) : "#000"}
+      stroke={selectionColor || "transparent"}
     />
   );
 }
