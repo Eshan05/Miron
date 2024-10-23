@@ -380,7 +380,8 @@ export const Canvas = ({ boardId }: CanvasProps) => {
           }
 
         case "v":
-          if (e.ctrlKey || e.metaKey) {
+          if (e.altKey) {
+            e.preventDefault();
             if (canvasState.mode === CanvasMode.None) setCanvasState({ mode: CanvasMode.Pressing, origin: { x: 0, y: 0 } });
             else if (layerIds.some((id) => {
               const layer = liveLayersRef.get(id);
@@ -390,13 +391,34 @@ export const Canvas = ({ boardId }: CanvasProps) => {
             break;
           }
         case "p":
-          // TODO: Detect when user in in Text Layer or Note Layer and typing and only then trigger
           if (canvasState.mode === CanvasMode.Pencil) return;
           else if (layerIds.some((id) => {
             const layer = liveLayersRef.get(id);
             return layer && (layer.type === LayerType.Text || layer.type === LayerType.Note);
           })) return;
           else setCanvasState({ mode: CanvasMode.Pencil });
+          break;
+
+        case "s":
+          if (e.altKey) {
+            e.preventDefault();
+            window.addEventListener('keydown', (event) => {
+              if (!isNaN(Number(event.key))) {
+                const shapeIndex = Number(event.key);
+                const shapeTypes: (LayerType.Rectangle | LayerType.Ellipse | LayerType.Text | LayerType.Note)[] = [
+                  LayerType.Rectangle,
+                  LayerType.Ellipse,
+                  LayerType.Text,
+                  LayerType.Note,
+                ];
+
+                const selectedShape = shapeTypes[shapeIndex];
+                if (selectedShape) {
+                  insertLayer(selectedShape, { x: 0, y: 0 });
+                }
+              }
+            });
+          }
           break;
       }
     }
