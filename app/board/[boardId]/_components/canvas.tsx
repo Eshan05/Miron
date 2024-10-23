@@ -2,7 +2,7 @@
 
 import { LiveObject } from "@liveblocks/client";
 import { nanoid } from "nanoid";
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState, useEffect, } from "react";
 
 import {
   type Camera,
@@ -366,17 +366,29 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     return layerIdsToColorSelection;
   }, [selections])
 
+
   const deleteLayers = useDeleteLayers();
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       switch (e.key) {
         case "z":
           if (e.ctrlKey || e.metaKey) {
-            if (e.shiftKey || e.altKey) history.redo();
+            if (e.shiftKey) history.redo();
             else history.undo();
 
             break;
           }
+        case "v":
+          if (e.ctrlKey) {
+            // TODO: Detect when user in in Text Layer or Note Layer and typing and only then trigger
+            if (canvasState.mode === CanvasMode.Pencil) return;
+            // else if (layerIds.some((id) => {
+            //   const layer = storage.get("layers").get(id);
+            //   return layer && (layer.get("type") === LayerType.Text || layer.get("type") === LayerType.Note);
+            // })) return;
+            else setCanvasState({ mode: CanvasMode.Pencil });
+          }
+          break;
       }
     }
 
@@ -384,7 +396,8 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     return () => {
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [deleteLayers, history]);
+  }, [history, canvasState.mode, layerIds, setCanvasState]);
+
 
   return (
     <main
@@ -450,3 +463,4 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     </main>
   );
 };
+
