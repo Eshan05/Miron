@@ -57,12 +57,12 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     b: 0,
   });
 
-
-
   useDisableScrollBounce();
   const history = useHistory();
   const canUndo = useCanUndo();
   const canRedo = useCanRedo();
+  const layerIdsRef = useStorage((root) => root.layerIds);
+  const liveLayersRef = useStorage((root) => root.layers);
 
   const insertLayer = useMutation(
     (
@@ -378,16 +378,25 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
             break;
           }
+
         case "v":
-          if (e.ctrlKey) {
-            // TODO: Detect when user in in Text Layer or Note Layer and typing and only then trigger
-            if (canvasState.mode === CanvasMode.Pencil) return;
-            // else if (layerIds.some((id) => {
-            //   const layer = storage.get("layers").get(id);
-            //   return layer && (layer.get("type") === LayerType.Text || layer.get("type") === LayerType.Note);
-            // })) return;
-            else setCanvasState({ mode: CanvasMode.Pencil });
+          if (e.ctrlKey || e.metaKey) {
+            if (canvasState.mode === CanvasMode.None) setCanvasState({ mode: CanvasMode.Pressing, origin: { x: 0, y: 0 } });
+            else if (layerIds.some((id) => {
+              const layer = liveLayersRef.get(id);
+              return layer && (layer.type === LayerType.Text || layer.type === LayerType.Note);
+            })) return;
+            else if (canvasState.mode !== CanvasMode.Pressing) setCanvasState({ mode: CanvasMode.None });
+            break;
           }
+        case "p":
+          // TODO: Detect when user in in Text Layer or Note Layer and typing and only then trigger
+          if (canvasState.mode === CanvasMode.Pencil) return;
+          else if (layerIds.some((id) => {
+            const layer = liveLayersRef.get(id);
+            return layer && (layer.type === LayerType.Text || layer.type === LayerType.Note);
+          })) return;
+          else setCanvasState({ mode: CanvasMode.Pencil });
           break;
       }
     }
