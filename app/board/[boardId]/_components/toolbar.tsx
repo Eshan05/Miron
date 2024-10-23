@@ -32,7 +32,7 @@ export const Toolbar = ({
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
       <div className="bg-white rounded-md p-1.5 flex gap-y-1 flex-col items-center shadow-md">
         <ToolButton
-          label="Select"
+          label=<div className="flex items-center">Select<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + V</kbd></div>
           icon={MousePointer2}
           onClick={() => setCanvasState({ mode: CanvasMode.None })}
           isActive={
@@ -45,7 +45,7 @@ export const Toolbar = ({
         />
 
         <ToolButton
-          label="Text"
+          label=<div className="flex items-center">Text<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + S 3</kbd></div>
           icon={Type}
           onClick={() =>
             setCanvasState({
@@ -60,7 +60,7 @@ export const Toolbar = ({
         />
 
         <ToolButton
-          label="Sticky note"
+          label={<div className="flex items-center">Sticky Note<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + S 4</kbd></div>}
           icon={StickyNote}
           onClick={() =>
             setCanvasState({
@@ -75,7 +75,7 @@ export const Toolbar = ({
         />
 
         <ToolButton
-          label="Rectangle"
+          label={<div className="flex items-center">Rectangle<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + S 1</kbd></div>}
           icon={Square}
           onClick={() =>
             setCanvasState({
@@ -90,7 +90,7 @@ export const Toolbar = ({
         />
 
         <ToolButton
-          label="Ellipse"
+          label={<div className="flex items-center">Ellipse<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + S 2</kbd></div>}
           icon={Circle}
           onClick={() =>
             setCanvasState({
@@ -105,7 +105,7 @@ export const Toolbar = ({
         />
 
         <ToolButton
-          label="Pen"
+          label={<div className="flex items-center">Pen<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">P</kbd></div>}
           icon={Pencil}
           onClick={() =>
             setCanvasState({
@@ -118,13 +118,13 @@ export const Toolbar = ({
 
       <div className="bg-white rounded-md p-1.5 flex flex-col items-center shadow-md">
         <ToolButton
-          label="Undo"
+          label=<div className="flex items-center">Undo<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">CTRL + Z</kbd></div>
           icon={Undo2}
           onClick={undo}
           isDisabled={!canUndo}
         />
         <ToolButton
-          label="Redo"
+          label={<div className="flex items-center">Redo<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">CTRL + ALT + Z</kbd></div>}
           icon={Redo2}
           onClick={redo}
           isDisabled={!canRedo}

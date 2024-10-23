@@ -51,6 +51,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     mode: CanvasMode.None,
   });
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
+  const [pendingLayerType, setPendingLayerType] = useState<LayerType.Ellipse | LayerType.Rectangle | LayerType.Text | LayerType.Note | null>(null);
   const [lastUsedColor, setLastUsedColor] = useState<Color>({
     r: 0,
     g: 0,
@@ -68,8 +69,8 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     (
       { storage, setMyPresence },
       layerType:
-        | LayerType.Ellipse
         | LayerType.Rectangle
+        | LayerType.Ellipse
         | LayerType.Text
         | LayerType.Note,
       position: Point
@@ -91,6 +92,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
       liveLayers.set(layerId, layer);
       setMyPresence({ selection: [layerId] }, { addToHistory: true });
       setCanvasState({ mode: CanvasMode.None });
+      console.log(layerType)
     },
     [lastUsedColor]
   );
@@ -319,7 +321,12 @@ export const Canvas = ({ boardId }: CanvasProps) => {
       } else if (canvasState.mode === CanvasMode.Pencil) {
         insertPath();
       } else if (canvasState.mode === CanvasMode.Inserting) {
-        insertLayer(canvasState.layerType, point);
+        if (pendingLayerType) {
+          insertLayer(pendingLayerType, point);
+          console.log(pendingLayerType, point);
+          setPendingLayerType(null); // Clear the pending type after insertion
+        } else
+          insertLayer(canvasState.layerType, point);
       } else {
         setCanvasState({
           mode: CanvasMode.None,
@@ -373,7 +380,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
       switch (e.key) {
         case "z":
           if (e.ctrlKey || e.metaKey) {
-            if (e.shiftKey) history.redo();
+            if (e.shiftKey || e.altKey) history.redo();
             else history.undo();
 
             break;
@@ -399,6 +406,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
           else setCanvasState({ mode: CanvasMode.Pencil });
           break;
 
+        // TODO: Fix multiple calls
         case "s":
           if (e.altKey) {
             e.preventDefault();
@@ -412,9 +420,11 @@ export const Canvas = ({ boardId }: CanvasProps) => {
                   LayerType.Note,
                 ];
 
-                const selectedShape = shapeTypes[shapeIndex];
+                const selectedShape = shapeTypes[shapeIndex - 1];
+                console.log("Selected index:", selectedShape);
                 if (selectedShape) {
-                  insertLayer(selectedShape, { x: 0, y: 0 });
+                  setPendingLayerType(selectedShape);
+                  setCanvasState({ mode: CanvasMode.Inserting, layerType: selectedShape });
                 }
               }
             });
@@ -427,7 +437,12 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     return () => {
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [history, canvasState.mode, layerIds, setCanvasState]);
+  }, [history,
+    canvasState.mode,
+    layerIds,
+    setCanvasState,
+    liveLayersRef,
+    insertLayer]);
 
 
   return (
