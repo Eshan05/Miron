@@ -12,7 +12,7 @@ interface DashboardProps {
 };
 
 const Dashboard = ({
-	searchParams,
+	searchParams = {},
 }: DashboardProps) => {
 	const { organization } = useOrganization();
 	return (
@@ -30,4 +30,4 @@ const Dashboard = ({
 	);
 };
 
-export default Dashboard
+export default Dashboard;
