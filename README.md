@@ -18,6 +18,7 @@
      A powerful, real-time collaborative whiteboard application built with cutting-edge web technologies.
     </div>
 </div>
+
 ## 🍁 Overview
 
 An online whiteboard for teams/organizations allowing for realtime collaboration with many features, user authentication and a nice UI. It serves as a clone of **Miro** with a very small subset of features of Miro. The project is from [**Code with Antoino**](https://codewithantonio.com/) with few extra features.
