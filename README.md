@@ -1,7 +1,11 @@
 # Realtime Collaborative Whiteboard
 
+## 🍁 Overview
+
 An online whiteboard for teams/organizations allowing for realtime collaboration with many features, user authentication and a nice UI. It serves as a clone of **Miro** with a very small subset of features of Miro. The project is from [**Code with Antoino**](https://codewithantonio.com/) with few extra features.
 <br />
+
+### 💻 Technolgoies
 
 [![React JS](https://skillicons.dev/icons?i=react "React JS")](https://react.dev/ "React JS") [![Next JS](https://skillicons.dev/icons?i=next "Next JS")](https://nextjs.org/ "Next JS") [![Typescript](https://skillicons.dev/icons?i=ts "Typescript")](https://www.typescriptlang.org/ "Typescript") [![Tailwind CSS](https://skillicons.dev/icons?i=tailwind "Tailwind CSS")](https://tailwindcss.com/ "Tailwind CSS") [![Vercel](https://skillicons.dev/icons?i=vercel "Vercel")](https://vercel.app/ "Vercel")
 
@@ -11,17 +15,19 @@ An online whiteboard for teams/organizations allowing for realtime collaboration
 - **Realtime + Secondary Database**: [Liveblocks](https://liveblocks.io/)
 - **Authentication**: [Clerk](https://convex.com/)
 
-## Table of Contents
+## 📃 Table of Contents
 
 - [Realtime Collaborative Whiteboard](#realtime-collaborative-whiteboard)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Usage](#usage)
-  - [Setup](#setup)
-  - [Screenshots](#screenshots)
-  - [Additional Notes](#additional-notes)
+  - [🍁 Overview](#-overview)
+    - [💻 Technolgoies](#-technolgoies)
+  - [📃 Table of Contents](#-table-of-contents)
+  - [🚀 Features](#-features)
+  - [🤝 Usage](#-usage)
+  - [⚙️ Setup](#️-setup)
+  - [📱 Screenshots](#-screenshots)
+  - [📄 Additional Notes](#-additional-notes)
 
-## Features
+## 🚀 Features
 
 - **🌍 Realtime Collaboration**: Multiple users can interact with and on the board simultaneously.
 - **🔒 Authentication**: Secure Authentication using Clerk for Google and Github
@@ -31,14 +37,14 @@ An online whiteboard for teams/organizations allowing for realtime collaboration
 - **✏️ Drawing Tools**: Select any layer and change it's color to any color, duplicate it, move to front or back or delete it. Ability to select multiple layers
 - **⌨️ Keyboard Shortcuts**: Use the whiteboard with accessible keyboard shortcuts 
 
-## Usage
+## 🤝 Usage
 
 1. Go visit the site and you'll be prompted to sign in
 2. Once signed in join an existing organization or make your own (Total limit is 50 so it's possible you won't be able to)
 3. After you're in an organization go to an existing board or make a new one (Limit of 5 per organization)
 4. You can now freely draw!
 
-## Setup
+## ⚙️ Setup
 
 - Follow these steps first
 ```shell
@@ -58,13 +64,13 @@ pnpm i
   4. For liveblocks also do the same and get two keys
   5. You should be all set, have two terminals: One `pnpm run dev` and one `pnpx convex dev`
 
-## Screenshots
+## 📱 Screenshots
 
 ![Image 1](./public/readme/dashboard.png)
 ![Image 2](./public/readme/square_color_tooltip.png)
 ![Image 3](./public/readme/alllayers.png)
 
-## Additional Notes
+## 📄 Additional Notes
 
 - See LICENSE (GPLv3)
 - Feel free to raise issues if you notice anything wrong
