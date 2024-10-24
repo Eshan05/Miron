@@ -1,0 +1,4 @@
+- Realtime collaborative whiteboard for your organization
+- Switch between organizations/teams and create favorite boards within each
+- Options to add shapes, text, notes and draw freely with many tools
+- 

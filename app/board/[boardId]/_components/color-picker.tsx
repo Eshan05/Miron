@@ -13,7 +13,7 @@ type ColorPickerProps = {
 export const ColorPicker = ({ onChange, lastUsedColor }: ColorPickerProps) => {
   const [color, setColor] = useState(colorToCSS(lastUsedColor));
   return (
-    <div className="flex flex-wrap gap-2 items-center max-w-[164px] pr-2 mr-2 border-r border-neutral-200">
+    <div className="flex flex-wrap gap-2 items-center max-w-[164px] pr-0 mr-2 border-r border-neutral-200 w-[148px]">
       <ColorButton color={{ r: 243, g: 82, b: 35 }} onClick={onChange} />
       <ColorButton color={{ r: 255, g: 249, b: 177 }} onClick={onChange} />
       <ColorButton color={{ r: 68, g: 202, b: 99 }} onClick={onChange} />
@@ -46,7 +46,7 @@ const ColorButton = ({ color, onClick }: ColorButtonProps) => {
       onClick={() => onClick(color)}
     >
       <div
-        className="h-8 w-8 rounded-md border border-neutral-300"
+        className="h-8 w-8 rounded-full border border-neutral-300"
         style={{ background: colorToCSS(color) }}
         aria-hidden
       />

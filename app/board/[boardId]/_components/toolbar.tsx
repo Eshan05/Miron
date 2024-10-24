@@ -70,7 +70,7 @@ export const Toolbar = ({
   }, [selection, setCanvasState]);
   return (
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
-      <div className="bg-white rounded-md p-1.5 flex gap-y-1 flex-col items-center shadow-md">
+      <div className="bg-white rounded-md p-1.5 flex gap-y-2 flex-col items-center shadow-md">
         <ToolButton
           label=<div className="flex items-center">Select<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + V</kbd></div>
           icon={MousePointer2}
