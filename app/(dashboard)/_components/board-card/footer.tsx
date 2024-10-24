@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { Star } from "lucide-react";
-import React from "react";
 
 interface FooterProps {
   title: string;

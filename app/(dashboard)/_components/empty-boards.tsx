@@ -1,12 +1,14 @@
-"use client"
-import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useOrganization } from "@clerk/nextjs";
+import { api } from "@/convex/_generated/api";
 import { title } from "process";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+
 export const EmptyBoards = () => {
   const router = useRouter();
   const { organization } = useOrganization();

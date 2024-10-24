@@ -8,8 +8,18 @@ import { ModalProvider } from "@/providers/modal-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Miron",
+  title: "Real-Time Whiteboard | Miron",
   description: "Real-Time Next.js 14 Miro Clone",
+  keywords: ['Next.js', 'Realtime', 'Miro', 'Whiteboard', 'Draw'],
+  authors: [{ name: "Eshan" }],
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: false,
+    },
+  },
 };
 
 export default function RootLayout({

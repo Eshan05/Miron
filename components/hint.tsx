@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/tooltip"
 
 export interface HintProps {
-  label: string;
+  label: React.ReactNode;
   children: React.ReactNode;
   side?: "top" | "bottom" | "left" | "right";
   align?: "start" | "center" | "end";
@@ -32,9 +32,9 @@ export const Hint = ({
           className="text-white bg-black border-black"
           side={side} sideOffset={sideOffset}
           align={align} alignOffset={alignOffset}>
-            <p className="font-semibold capitalize">
-              {label}
-            </p>
+          <p className="font-semibold capitalize">
+            {label}
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

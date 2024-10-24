@@ -9,9 +9,9 @@ const DashboardLayout = ({
   children,
 }: DashboardLayoutProps) => {
   return (
-    <main className="h-full">
+    <main className="min-h-full h-full">
       <Sidebar />
-      <div className="h-full pl-[60px]">
+      <div className="h-full md:pl-[60px]">
         <div className="flex gap-x-3 h-full">
           <OrgSidebar />
           <div className="h-full flex-1">

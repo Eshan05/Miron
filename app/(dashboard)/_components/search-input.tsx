@@ -1,9 +1,9 @@
 "use client";
 
-import qs from "query-string";
-import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "@uidotdev/usehooks";
+import qs from "query-string";
+import { Search } from "lucide-react";
 import {
   ChangeEvent,
   useEffect,

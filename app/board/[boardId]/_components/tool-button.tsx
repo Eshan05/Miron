@@ -6,7 +6,7 @@ import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 
 type ToolButtonProps = {
-  label: string;
+  label: React.ReactNode;
   icon: LucideIcon;
   onClick: () => void;
   isActive?: boolean;

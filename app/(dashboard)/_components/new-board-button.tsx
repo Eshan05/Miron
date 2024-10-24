@@ -1,15 +1,18 @@
 "use client";
-import { useApiMutation } from "@/hooks/use-api-mutation";
-import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
-import { api } from "@/convex/_generated/api";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface NewBoardButtonProps {
   disabled?: boolean;
   orgId: string;
 };
+
+const MAX_BOARDS_WITHIN_ORG = 5;
 
 export const NewBoardButton = ({
   orgId,
@@ -17,7 +20,17 @@ export const NewBoardButton = ({
 }: NewBoardButtonProps) => {
   const router = useRouter();
   const { mutate, pending } = useApiMutation(api.board.create);
+  const data = useQuery(api.board.getTotalBoardCountOfOrg, {
+    orgId,
+  });
+
+
   const onClick = () => {
+    if (data && data >= MAX_BOARDS_WITHIN_ORG) {
+      toast.error(`Only ${MAX_BOARDS_WITHIN_ORG} boards within an organization`);
+      return;
+    }
+
     mutate({
       orgId,
       title: "Untitled",
@@ -25,7 +38,6 @@ export const NewBoardButton = ({
       .then((id) => {
         toast.success("Board created");
         router.push(`/board/${id}`)
-        // TODO: Redirect to /board/{id}
       })
       .catch(() => toast.error("Failed to create board"));
   }

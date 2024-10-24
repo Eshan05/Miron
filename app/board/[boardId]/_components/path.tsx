@@ -1,6 +1,5 @@
 import { getSvgPathFromStroke } from "@/lib/utils";
 import getStroke from "perfect-freehand";
-import React from "react";
 
 type PathProps = {
   x: number;

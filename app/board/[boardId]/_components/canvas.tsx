@@ -1,8 +1,17 @@
 "use client";
 
-import { LiveObject } from "@liveblocks/client";
+import React, { useCallback, useMemo, useState, useEffect, } from "react";
 import { nanoid } from "nanoid";
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import { LiveObject } from "@liveblocks/client";
+import {
+  useCanRedo,
+  useCanUndo,
+  useHistory,
+  useMutation,
+  useOthersMapped,
+  useSelf,
+  useStorage,
+} from "@/liveblocks.config";
 
 import {
   type Camera,
@@ -15,15 +24,6 @@ import {
   XYWH,
 } from "@/types/canvas";
 import { colorToCSS, connectionIdToColor, findIntersectingLayersWithRectangle, penPointsToPathLayer, pointerEventToCanvasPoint, resizeBounds } from "@/lib/utils";
-import {
-  useCanRedo,
-  useCanUndo,
-  useHistory,
-  useMutation,
-  useOthersMapped,
-  useSelf,
-  useStorage,
-} from "@/liveblocks.config";
 
 import { CursorsPresence } from "./cursors-presence";
 import { Info } from "./info";
@@ -33,11 +33,14 @@ import { Toolbar } from "./toolbar";
 import { SelectionBox } from "./selection-box";
 import { SelectionTools } from "./selection-tools";
 import { Path } from "./path";
+import { ResetCamera } from "./reset-camera";
+
 import { useDisableScrollBounce } from "@/hooks/use-disable-scroll-bounce";
 import { useDeleteLayers } from "@/hooks/use-delete-layers";
 
 const MAX_LAYERS = 100;
 const MULTISELECTION_THRESHOLD = 5;
+const MOVE_OFFSET = 5;
 
 type CanvasProps = {
   boardId: string;
@@ -51,25 +54,33 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     mode: CanvasMode.None,
   });
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
+  const resetCamera = useCallback(() => {
+    setCamera({ x: 0, y: 0 });
+  }, []);
+  const [pendingLayerType, setPendingLayerType] = useState<
+    LayerType.Ellipse
+    | LayerType.Rectangle
+    | LayerType.Text
+    | LayerType.Note | null>(null);
   const [lastUsedColor, setLastUsedColor] = useState<Color>({
     r: 0,
     g: 0,
     b: 0,
   });
 
-
-
   useDisableScrollBounce();
   const history = useHistory();
   const canUndo = useCanUndo();
   const canRedo = useCanRedo();
+  const layerIdsRef = useStorage((root) => root.layerIds);
+  const liveLayersRef = useStorage((root) => root.layers);
 
   const insertLayer = useMutation(
     (
       { storage, setMyPresence },
       layerType:
-        | LayerType.Ellipse
         | LayerType.Rectangle
+        | LayerType.Ellipse
         | LayerType.Text
         | LayerType.Note,
       position: Point
@@ -91,6 +102,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
       liveLayers.set(layerId, layer);
       setMyPresence({ selection: [layerId] }, { addToHistory: true });
       setCanvasState({ mode: CanvasMode.None });
+      console.log(layerType)
     },
     [lastUsedColor]
   );
@@ -319,7 +331,12 @@ export const Canvas = ({ boardId }: CanvasProps) => {
       } else if (canvasState.mode === CanvasMode.Pencil) {
         insertPath();
       } else if (canvasState.mode === CanvasMode.Inserting) {
-        insertLayer(canvasState.layerType, point);
+        if (pendingLayerType) {
+          insertLayer(pendingLayerType, point);
+          console.log(pendingLayerType, point);
+          setPendingLayerType(null); // Clear the pending type after insertion
+        } else
+          insertLayer(canvasState.layerType, point);
       } else {
         setCanvasState({
           mode: CanvasMode.None,
@@ -366,9 +383,55 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     return layerIdsToColorSelection;
   }, [selections])
 
+
+  const duplicateLayers = useMutation(({ storage, self, setMyPresence }) => {
+    const liveLayers = storage.get("layers");
+    const liveLayerIds = storage.get("layerIds");
+    const newLayerIds: string[] = [];
+    const layersIdsToCopy = self.presence.selection;
+    layersIdsToCopy.forEach((layerId) => {
+      const newLayerId = nanoid();
+      const layer = liveLayers.get(layerId);
+      if (layer) {
+        const newLayer = layer.clone();
+        newLayer.set("x", newLayer.get("x") + 10);
+        newLayer.set("y", newLayer.get("y") + 10);
+        liveLayerIds.push(newLayerId);
+        liveLayers.set(newLayerId, newLayer);
+        newLayerIds.push(newLayerId);
+      }
+    });
+    setMyPresence({ selection: [...newLayerIds] }, { addToHistory: true });
+    setCanvasState({ mode: CanvasMode.None });
+  }, []);
+
+  const moveSelectedLayers = useMutation(
+    ({ storage, self, setMyPresence }, offset: Point) => {
+      const liveLayers = storage.get("layers");
+      const selection = self.presence.selection;
+      if (selection.length === 0) {
+        return;
+      }
+
+      for (const id of selection) {
+        const layer = liveLayers.get(id);
+        if (layer) {
+          layer.update({
+            x: layer.get("x") + offset.x,
+            y: layer.get("y") + offset.y,
+          });
+        }
+      }
+
+      setMyPresence({ selection }, { addToHistory: true });
+    },
+    [canvasState, history]
+  );
+
   const deleteLayers = useDeleteLayers();
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
+      let offset: Point = { x: 0, y: 0 };
       switch (e.key) {
         case "z":
           if (e.ctrlKey || e.metaKey) {
@@ -377,6 +440,31 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
             break;
           }
+
+        case "d": {
+          e.preventDefault();
+          if (e.ctrlKey && canvasState.mode === CanvasMode.None) duplicateLayers();
+          break;
+        }
+
+        case "ArrowUp":
+          offset = { x: 0, y: -MOVE_OFFSET };
+          moveSelectedLayers(offset);
+          break;
+        case "ArrowDown":
+          offset = { x: 0, y: MOVE_OFFSET };
+          moveSelectedLayers(offset);
+          break;
+        case "ArrowLeft":
+          offset = { x: -MOVE_OFFSET, y: 0 };
+          moveSelectedLayers(offset);
+          break;
+        case "ArrowRight":
+          offset = { x: MOVE_OFFSET, y: 0 };
+          moveSelectedLayers(offset);
+          break;
+
+        default: break;
       }
     }
 
@@ -384,10 +472,18 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     return () => {
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [deleteLayers, history]);
+  }, [history,
+    canvasState.mode,
+    layerIds,
+    setCanvasState,
+    liveLayersRef,
+    insertLayer,
+    duplicateLayers,
+    moveSelectedLayers]);
 
   return (
-    <main className="h-full w-full relative bg-neutral-100 touch-none">
+    <main
+      className="h-full w-full relative bg-neutral-200 touch-none">
       <Info boardId={boardId} />
       <Participants />
       <Toolbar
@@ -398,9 +494,12 @@ export const Canvas = ({ boardId }: CanvasProps) => {
         undo={history.undo}
         redo={history.redo}
       />
+      {camera.x != 0 && camera.y != 0 && <ResetCamera resetCamera={resetCamera} />}
       <SelectionTools
+        onDuplicate={duplicateLayers}
         camera={camera}
         setLastUsedColor={setLastUsedColor}
+        lastUsedColor={lastUsedColor}
       />
 
       <svg
@@ -449,3 +548,4 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     </main>
   );
 };
+

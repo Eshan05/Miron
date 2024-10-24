@@ -1,8 +1,8 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { Loader } from "lucide-react";
 import { InfoSkeleton } from "./info";
 import { ParticipantsSkeleton } from "./participants";
 import { ToolbarSkeleton } from "./toolbar";
+import { ResetCameraSkeleton } from "./reset-camera";
 
 export const Loading = () => {
   return (
@@ -11,7 +11,7 @@ export const Loading = () => {
       <InfoSkeleton />
       <ParticipantsSkeleton />
       <ToolbarSkeleton />
-
+      <ResetCameraSkeleton />
     </main>
   );
 }
