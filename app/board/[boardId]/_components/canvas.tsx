@@ -374,6 +374,27 @@ export const Canvas = ({ boardId }: CanvasProps) => {
   }, [selections])
 
 
+  const duplicateLayers = useMutation(({ storage, self, setMyPresence }) => {
+    const liveLayers = storage.get("layers");
+    const liveLayerIds = storage.get("layerIds");
+    const newLayerIds: string[] = [];
+    const layersIdsToCopy = self.presence.selection;
+    layersIdsToCopy.forEach((layerId) => {
+      const newLayerId = nanoid();
+      const layer = liveLayers.get(layerId);
+      if (layer) {
+        const newLayer = layer.clone();
+        newLayer.set("x", newLayer.get("x") + 10);
+        newLayer.set("y", newLayer.get("y") + 10);
+        liveLayerIds.push(newLayerId);
+        liveLayers.set(newLayerId, newLayer);
+        newLayerIds.push(newLayerId);
+      }
+    });
+    setMyPresence({ selection: [...newLayerIds] }, { addToHistory: true });
+    setCanvasState({ mode: CanvasMode.None });
+  }, []);
+
   const deleteLayers = useDeleteLayers();
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -385,6 +406,12 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
             break;
           }
+
+        case "d": {
+          e.preventDefault();
+          if (e.ctrlKey && canvasState.mode === CanvasMode.None) duplicateLayers();
+          break;
+        }
 
         case "v":
           if (e.altKey) {
@@ -459,8 +486,10 @@ export const Canvas = ({ boardId }: CanvasProps) => {
         redo={history.redo}
       />
       <SelectionTools
+        onDuplicate={duplicateLayers}
         camera={camera}
         setLastUsedColor={setLastUsedColor}
+        lastUsedColor={lastUsedColor}
       />
 
       <svg

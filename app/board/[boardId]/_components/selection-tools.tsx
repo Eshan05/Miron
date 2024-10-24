@@ -8,19 +8,20 @@ import { ColorPicker } from "./color-picker";
 import { useDeleteLayers } from "@/hooks/use-delete-layers";
 import { Button } from "@/components/ui/button";
 import { Hint } from "@/components/hint";
-import { BringToFront, SendToBack, Trash2 } from "lucide-react";
+import { BringToFront, SendToBack, Trash2, Copy } from "lucide-react";
 import { Noto_Sans_Indic_Siyaq_Numbers } from "next/font/google";
 
 interface SelectionToolsProps {
   camera: Camera;
   setLastUsedColor: (color: Color) => void
+  onDuplicate: () => void;
+  lastUsedColor: Color;
 }
 
 export const SelectionTools = memo(
-  ({ camera, setLastUsedColor }: SelectionToolsProps) => {
+  ({ camera, setLastUsedColor, onDuplicate, lastUsedColor }: SelectionToolsProps) => {
     const selection = useSelf((me) => me.presence.selection);
     const selectionBounds = useSelectionBounds();
-
     const deleteLayers = useDeleteLayers();
 
     const moveToFront = useMutation(
@@ -82,7 +83,7 @@ export const SelectionTools = memo(
           calc(${y - 16}px - 100%)
         )`
         }}>
-        <ColorPicker onChange={setFill} />
+        <ColorPicker onChange={setFill} lastUsedColor={lastUsedColor} />
         <div className="flex flex-col gap-y-0.5">
           <Hint label="Bring to front">
             <Button variant="board" size="icon" onClick={moveToFront}><BringToFront /></Button>
@@ -91,9 +92,24 @@ export const SelectionTools = memo(
             <Button variant="board" size="icon" onClick={moveToBack}><SendToBack /></Button>
           </Hint>
         </div>
-        <div className="flex items-center pl-2 ml-2 border-l border-neutral-200">
-          <Hint label="Delete">
-            <Button variant="board" size="icon" onClick={deleteLayers}><Trash2 /></Button>
+        <div className="flex flex-col items-center pl-2 ml-2 border-l border-neutral-200">
+          <Hint label={<div className="flex items-center">Duplicate<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">CTRL + D</kbd></div>}>
+            <Button
+              onClick={onDuplicate}
+              variant="board"
+              size="icon"
+            >
+              <Copy />
+            </Button>
+          </Hint>
+          <Hint label="Delete" side="bottom">
+            <Button
+              variant="boardDestructive"
+              size="icon"
+              onClick={deleteLayers}
+            >
+              <Trash2 />
+            </Button>
           </Hint>
         </div>
       </div>

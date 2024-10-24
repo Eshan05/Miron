@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Circle,
   MousePointer2,
@@ -10,6 +12,8 @@ import {
 } from "lucide-react";
 import { CanvasMode, LayerType, type CanvasState } from "@/types/canvas";
 import { ToolButton } from "./tool-button";
+import { useSelf } from "@/liveblocks.config";
+import { useEffect } from "react";
 
 type ToolbarProps = {
   canvasState: CanvasState;
@@ -28,6 +32,42 @@ export const Toolbar = ({
   canRedo,
   canUndo,
 }: ToolbarProps) => {
+  const selection = useSelf((me) => me.presence.selection);
+  //? The fucking rectangle still doesn't work
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (selection?.length > 0) return;
+      let altSPressed = false;
+
+      switch (e.key) {
+        case "i":
+          if (e.altKey) {
+            e.preventDefault();
+            altSPressed = true;
+            console.log("Alt+I pressed.");
+          }
+          break;
+        case "1":
+          if (altSPressed) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Rectangle,
+            });
+            altSPressed = false;
+          }
+          break;
+        default:
+          altSPressed = false;
+          break;
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [selection, setCanvasState]);
   return (
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
       <div className="bg-white rounded-md p-1.5 flex gap-y-1 flex-col items-center shadow-md">
