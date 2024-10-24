@@ -1,5 +1,23 @@
-# Realtime Collaborative Whiteboard
+<div align="center">
+  <br />
+    <a href="https://miron-seven.vercel.app" target="_blank">
+      <img src="./public/readme/alllayers.png" alt="Project Banner">
+    </a>
+  <br />
+  <div>
+    <img src="https://img.shields.io/badge/-Next_JS-black?style=for-the-badge&logoColor=white&logo=nextdotjs&color=000000" alt="nextdotjs" />
+    <img src="https://img.shields.io/badge/-ReactJs-61DAFB?logo=react&logoColor=white&style=for-the-badge" alt="reactdotjs" />
+    <img src="https://img.shields.io/badge/-TypeScript-purple?style=for-the-badge&logoColor=white&logo=typescript&color=purple" alt="typescript" />
+    <img src="https://img.shields.io/badge/-Tailwind_CSS-black?style=for-the-badge&logoColor=white&logo=tailwindcss&color=06B6D4" alt="tailwindcss" />
+    <img src="https://img.shields.io/badge/-Convex-orange?style=for-the-badge&logoColor=white&logo=convex&color=orange" alt="convex" />
+    <img src="https://img.shields.io/badge/-ClerkJS-green?style=for-the-badge&logoColor=white&logo=clerkjs&color=green" alt="clerkjs" />
+  </div>
+  <h3 align="center">Miron: The Collaborative Whiteboard</h3>
 
+   <div align="center">
+     A powerful, real-time collaborative whiteboard application built with cutting-edge web technologies.
+    </div>
+</div>
 ## 🍁 Overview
 
 An online whiteboard for teams/organizations allowing for realtime collaboration with many features, user authentication and a nice UI. It serves as a clone of **Miro** with a very small subset of features of Miro. The project is from [**Code with Antoino**](https://codewithantonio.com/) with few extra features.
@@ -17,15 +35,14 @@ An online whiteboard for teams/organizations allowing for realtime collaboration
 
 ## 📃 Table of Contents
 
-- [Realtime Collaborative Whiteboard](#realtime-collaborative-whiteboard)
-  - [🍁 Overview](#-overview)
-    - [💻 Technolgoies](#-technolgoies)
-  - [📃 Table of Contents](#-table-of-contents)
-  - [🚀 Features](#-features)
-  - [🤝 Usage](#-usage)
-  - [⚙️ Setup](#️-setup)
-  - [📱 Screenshots](#-screenshots)
-  - [📄 Additional Notes](#-additional-notes)
+- [🍁 Overview](#-overview)
+  - [💻 Technolgoies](#-technolgoies)
+- [📃 Table of Contents](#-table-of-contents)
+- [🚀 Features](#-features)
+- [🤝 Usage](#-usage)
+- [⚙️ Setup](#️-setup)
+- [📱 Screenshots](#-screenshots)
+- [📄 Additional Notes](#-additional-notes)
 
 ## 🚀 Features
 
@@ -68,7 +85,7 @@ pnpm i
 
 ![Image 1](./public/readme/dashboard.png)
 ![Image 2](./public/readme/square_color_tooltip.png)
-![Image 3](./public/readme/alllayers.png)
+<!-- ![Image 3](./public/readme/alllayers.png) -->
 
 ## 📄 Additional Notes
 
