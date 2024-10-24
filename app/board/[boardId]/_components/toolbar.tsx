@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelf } from "@/liveblocks.config";
 import {
   Circle,
@@ -33,32 +33,102 @@ export const Toolbar = ({
   canUndo,
 }: ToolbarProps) => {
   const selection = useSelf((me) => me.presence.selection);
-  //? The fucking rectangle still doesn't work
+  const [isAltSPressed, setIsAltSPressed] = useState(false);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (selection?.length > 0) return;
-      let altSPressed = false;
 
       switch (e.key) {
-        case "i":
+        // Handle Alt + S
+        case "s":
           if (e.altKey) {
             e.preventDefault();
-            altSPressed = true;
-            console.log("Alt+I pressed.");
+            setIsAltSPressed(true);
+            console.log("Alt + S pressed.");
           }
           break;
+
         case "1":
-          if (altSPressed) {
+          if (isAltSPressed) {
             e.preventDefault();
             setCanvasState({
               mode: CanvasMode.Inserting,
               layerType: LayerType.Rectangle,
             });
-            altSPressed = false;
+            console.log("Alt + S + 1 pressed: Rectangle tool activated.");
+            setIsAltSPressed(false);
           }
           break;
+
+        case "2":
+          if (isAltSPressed) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Ellipse,
+            });
+            console.log("Alt + S + 2 pressed: Ellipse tool activated.");
+            setIsAltSPressed(false);
+          }
+          break;
+
+        case "3":
+          if (isAltSPressed) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Text,
+            });
+            console.log("Alt + S + 3 pressed: Text tool activated.");
+            setIsAltSPressed(false);
+          }
+          break;
+
+        case "4":
+          if (isAltSPressed) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Note,
+            });
+            console.log("Alt + S + 4 pressed: Sticky Note tool activated.");
+            setIsAltSPressed(false);
+          }
+          break;
+
+        case "v":
+          if (e.altKey) {
+            e.preventDefault();
+            setCanvasState({ mode: CanvasMode.None });
+            console.log("Alt + V pressed: Select tool activated.");
+          }
+          break;
+
+        case "p":
+          e.preventDefault();
+          setCanvasState({ mode: CanvasMode.Pencil });
+          console.log("P pressed: Pencil tool activated.");
+          break;
+
+        case "z":
+          if (e.ctrlKey) {
+            e.preventDefault();
+            undo();
+            console.log("Ctrl + Z pressed: Undo action.");
+          }
+          break;
+
+        case "Z":
+          if (e.ctrlKey && e.altKey) {
+            e.preventDefault();
+            redo();
+            console.log("Ctrl + Alt + Z pressed: Redo action.");
+          }
+          break;
+
         default:
-          altSPressed = false;
+          setIsAltSPressed(false);
           break;
       }
     };
@@ -67,12 +137,12 @@ export const Toolbar = ({
     return () => {
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [selection, setCanvasState]);
+  }, [selection, setCanvasState, undo, redo, isAltSPressed]);
   return (
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
       <div className="bg-white rounded-md p-1.5 flex gap-y-2 flex-col items-center shadow-md">
         <ToolButton
-          label=<div className="flex items-center">Select<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + V</kbd></div>
+          label={<div className="flex items-center">Select<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + V</kbd></div>}
           icon={MousePointer2}
           onClick={() => setCanvasState({ mode: CanvasMode.None })}
           isActive={
@@ -85,7 +155,7 @@ export const Toolbar = ({
         />
 
         <ToolButton
-          label=<div className="flex items-center">Text<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + S 3</kbd></div>
+          label={<div className="flex items-center">Text<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">ALT + S 3</kbd></div>}
           icon={Type}
           onClick={() =>
             setCanvasState({
@@ -158,7 +228,7 @@ export const Toolbar = ({
 
       <div className="bg-white rounded-md p-1.5 flex flex-col items-center shadow-md">
         <ToolButton
-          label=<div className="flex items-center">Undo<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">CTRL + Z</kbd></div>
+          label={<div className="flex items-center">Undo<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">CTRL + Z</kbd></div>}
           icon={Undo2}
           onClick={undo}
           isDisabled={!canUndo}

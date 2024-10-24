@@ -464,50 +464,6 @@ export const Canvas = ({ boardId }: CanvasProps) => {
           moveSelectedLayers(offset);
           break;
 
-        case "v":
-          if (e.altKey) {
-            e.preventDefault();
-            if (canvasState.mode === CanvasMode.None) setCanvasState({ mode: CanvasMode.Pressing, origin: { x: 0, y: 0 } });
-            else if (layerIds.some((id) => {
-              const layer = liveLayersRef.get(id);
-              return layer && (layer.type === LayerType.Text || layer.type === LayerType.Note);
-            })) return;
-            else if (canvasState.mode !== CanvasMode.Pressing) setCanvasState({ mode: CanvasMode.None });
-            break;
-          }
-        case "p":
-          if (canvasState.mode === CanvasMode.Pencil) return;
-          else if (layerIds.some((id) => {
-            const layer = liveLayersRef.get(id);
-            return layer && (layer.type === LayerType.Text || layer.type === LayerType.Note);
-          })) return;
-          else setCanvasState({ mode: CanvasMode.Pencil });
-          break;
-
-        // TODO: Fix multiple calls
-        case "s":
-          if (e.altKey) {
-            e.preventDefault();
-            window.addEventListener('keydown', (event) => {
-              if (!isNaN(Number(event.key))) {
-                const shapeIndex = Number(event.key);
-                const shapeTypes: (LayerType.Rectangle | LayerType.Ellipse | LayerType.Text | LayerType.Note)[] = [
-                  LayerType.Rectangle,
-                  LayerType.Ellipse,
-                  LayerType.Text,
-                  LayerType.Note,
-                ];
-
-                const selectedShape = shapeTypes[shapeIndex - 1];
-                console.log("Selected index:", selectedShape);
-                if (selectedShape) {
-                  setPendingLayerType(selectedShape);
-                  setCanvasState({ mode: CanvasMode.Inserting, layerType: selectedShape });
-                }
-              }
-            });
-          }
-          break;
         default: break;
       }
     }
@@ -522,7 +478,8 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     setCanvasState,
     liveLayersRef,
     insertLayer,
-    duplicateLayers]);
+    duplicateLayers,
+    moveSelectedLayers]);
 
   return (
     <main
