@@ -131,3 +131,16 @@ export const get = query({
     return board;
   },
 });
+
+export const getTotalBoardCountOfOrg = query({
+  args: {
+    orgId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("boards")
+      .withIndex("by_org", (q) => q.eq("orgId", args.orgId))
+      .collect()
+      .then((boards) => boards.length);
+  },
+});
