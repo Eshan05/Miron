@@ -1,10 +1,10 @@
 "use client";
-import { memo } from "react";
-import { useOthersConnectionIds, useOthersMapped } from "@/liveblocks.config";
-import { Cursor } from "./cursor";
+
 import { colorToCSS } from "@/lib/utils";
 import { shallow } from "@liveblocks/client";
+import { useOthersConnectionIds, useOthersMapped } from "@/liveblocks.config";
 import { Path } from "./path";
+import { Cursor } from "./cursor";
 
 const Cursors = () => {
   const ids = useOthersConnectionIds();

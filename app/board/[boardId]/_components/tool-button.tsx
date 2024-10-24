@@ -4,7 +4,6 @@ import type { LucideIcon } from "lucide-react";
 
 import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
-import React from "react";
 
 type ToolButtonProps = {
   label: React.ReactNode;

@@ -2,11 +2,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-import { cn } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
 import { OrganizationSwitcher } from "@clerk/nextjs";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, Star } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 
 const font = Poppins({
   subsets: ["latin"],

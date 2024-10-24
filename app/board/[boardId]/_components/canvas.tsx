@@ -1,8 +1,17 @@
 "use client";
 
-import { LiveObject } from "@liveblocks/client";
-import { nanoid } from "nanoid";
 import React, { useCallback, useMemo, useState, useEffect, } from "react";
+import { nanoid } from "nanoid";
+import { LiveObject } from "@liveblocks/client";
+import {
+  useCanRedo,
+  useCanUndo,
+  useHistory,
+  useMutation,
+  useOthersMapped,
+  useSelf,
+  useStorage,
+} from "@/liveblocks.config";
 
 import {
   type Camera,
@@ -15,15 +24,6 @@ import {
   XYWH,
 } from "@/types/canvas";
 import { colorToCSS, connectionIdToColor, findIntersectingLayersWithRectangle, penPointsToPathLayer, pointerEventToCanvasPoint, resizeBounds } from "@/lib/utils";
-import {
-  useCanRedo,
-  useCanUndo,
-  useHistory,
-  useMutation,
-  useOthersMapped,
-  useSelf,
-  useStorage,
-} from "@/liveblocks.config";
 
 import { CursorsPresence } from "./cursors-presence";
 import { Info } from "./info";
@@ -33,12 +33,14 @@ import { Toolbar } from "./toolbar";
 import { SelectionBox } from "./selection-box";
 import { SelectionTools } from "./selection-tools";
 import { Path } from "./path";
+import { ResetCamera } from "./reset-camera";
+
 import { useDisableScrollBounce } from "@/hooks/use-disable-scroll-bounce";
 import { useDeleteLayers } from "@/hooks/use-delete-layers";
-import { ResetCamera } from "./reset-camera";
 
 const MAX_LAYERS = 100;
 const MULTISELECTION_THRESHOLD = 5;
+const MOVE_OFFSET = 5;
 
 type CanvasProps = {
   boardId: string;
@@ -403,9 +405,33 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     setCanvasState({ mode: CanvasMode.None });
   }, []);
 
+  const moveSelectedLayers = useMutation(
+    ({ storage, self, setMyPresence }, offset: Point) => {
+      const liveLayers = storage.get("layers");
+      const selection = self.presence.selection;
+      if (selection.length === 0) {
+        return;
+      }
+
+      for (const id of selection) {
+        const layer = liveLayers.get(id);
+        if (layer) {
+          layer.update({
+            x: layer.get("x") + offset.x,
+            y: layer.get("y") + offset.y,
+          });
+        }
+      }
+
+      setMyPresence({ selection }, { addToHistory: true });
+    },
+    [canvasState, history]
+  );
+
   const deleteLayers = useDeleteLayers();
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
+      let offset: Point = { x: 0, y: 0 };
       switch (e.key) {
         case "z":
           if (e.ctrlKey || e.metaKey) {
@@ -420,6 +446,23 @@ export const Canvas = ({ boardId }: CanvasProps) => {
           if (e.ctrlKey && canvasState.mode === CanvasMode.None) duplicateLayers();
           break;
         }
+
+        case "ArrowUp":
+          offset = { x: 0, y: -MOVE_OFFSET };
+          moveSelectedLayers(offset);
+          break;
+        case "ArrowDown":
+          offset = { x: 0, y: MOVE_OFFSET };
+          moveSelectedLayers(offset);
+          break;
+        case "ArrowLeft":
+          offset = { x: -MOVE_OFFSET, y: 0 };
+          moveSelectedLayers(offset);
+          break;
+        case "ArrowRight":
+          offset = { x: MOVE_OFFSET, y: 0 };
+          moveSelectedLayers(offset);
+          break;
 
         case "v":
           if (e.altKey) {
@@ -465,6 +508,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
             });
           }
           break;
+        default: break;
       }
     }
 
@@ -477,8 +521,8 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     layerIds,
     setCanvasState,
     liveLayersRef,
-    insertLayer]);
-
+    insertLayer,
+    duplicateLayers]);
 
   return (
     <main

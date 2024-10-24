@@ -1,9 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import type { Color } from "@/types/canvas";
 import { CustomColorPicker } from "@/components/custom-color-picker";
 import { colorToCSS, CSSToColor } from "@/lib/utils";
-import type { Color } from "@/types/canvas";
-import { useState } from "react";
 
 type ColorPickerProps = {
   onChange: (color: Color) => void;

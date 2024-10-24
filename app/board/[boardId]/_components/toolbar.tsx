@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useSelf } from "@/liveblocks.config";
 import {
   Circle,
   MousePointer2,
@@ -12,8 +14,6 @@ import {
 } from "lucide-react";
 import { CanvasMode, LayerType, type CanvasState } from "@/types/canvas";
 import { ToolButton } from "./tool-button";
-import { useSelf } from "@/liveblocks.config";
-import { useEffect } from "react";
 
 type ToolbarProps = {
   canvasState: CanvasState;
