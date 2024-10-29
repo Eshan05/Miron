@@ -70,7 +70,7 @@ git clone https://github.com/Eshan05/Miron
 cd Miron
 pnpm i
 ```
-- Now to step up your `.env.local`:
+- Now to setup up your `.env.local`:
   1. First look at `.env.sample`, these are all variables you need
   2. For convex visit their site and sign in/up, then make a new project and from there you can get two keys
   3. For clerk do the same as above, but also the following: 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useState, useEffect, } from "react";
+import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import { nanoid } from "nanoid";
 import { LiveObject } from "@liveblocks/client";
 import {
@@ -13,17 +13,25 @@ import {
   useStorage,
 } from "@/liveblocks.config";
 
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { toPng } from "html-to-image";
+
 import {
-  type Camera,
   CanvasMode,
+  LayerType,
+  type Camera,
   type CanvasState,
   type Color,
-  LayerType,
-  type Point,
-  Side,
-  XYWH,
+  type Point, Side, XYWH,
 } from "@/types/canvas";
-import { colorToCSS, connectionIdToColor, findIntersectingLayersWithRectangle, penPointsToPathLayer, pointerEventToCanvasPoint, resizeBounds } from "@/lib/utils";
+import {
+  colorToCSS,
+  connectionIdToColor,
+  findIntersectingLayersWithRectangle,
+  penPointsToPathLayer, pointerEventToCanvasPoint, resizeBounds
+} from "@/lib/utils";
 
 import { CursorsPresence } from "./cursors-presence";
 import { Info } from "./info";
@@ -57,6 +65,10 @@ export const Canvas = ({ boardId }: CanvasProps) => {
   const resetCamera = useCallback(() => {
     setCamera({ x: 0, y: 0 });
   }, []);
+
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const data = useQuery(api.board.get, { id: boardId as Id<"boards"> });
+
   const [pendingLayerType, setPendingLayerType] = useState<
     LayerType.Ellipse
     | LayerType.Rectangle
@@ -166,6 +178,37 @@ export const Canvas = ({ boardId }: CanvasProps) => {
       });
     }
   }, []);
+
+  const exportAsPng = () => {
+    if (svgRef.current) {
+      const bbox = svgRef.current.getBBox();
+      const svgClone = svgRef.current.cloneNode(true) as SVGSVGElement;
+
+      svgClone.setAttribute("width", bbox.width.toString());
+      svgClone.setAttribute("height", bbox.height.toString());
+      svgClone.setAttribute(
+        "viewBox",
+        `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`
+      );
+
+      document.body.appendChild(svgClone);
+
+      toPng(svgClone as unknown as HTMLElement)
+        .then((dataUrl) => {
+          const link = document.createElement("a");
+          link.href = dataUrl;
+          link.download = `${data?.title || "download"}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          document.body.removeChild(svgClone);
+        })
+        .catch((error) => {
+          console.error("Error exporting SVG to PNG", error);
+          document.body.removeChild(svgClone);
+        });
+    }
+  };
 
   const continueDrawing = useMutation(
     ({ self, setMyPresence }, point: Point, event: React.PointerEvent) => {
@@ -484,7 +527,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
   return (
     <main
       className="h-full w-full relative bg-neutral-200 touch-none">
-      <Info boardId={boardId} />
+      <Info boardId={boardId} exportAsPng={exportAsPng} />
       <Participants />
       <Toolbar
         canvasState={canvasState}
@@ -503,6 +546,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
       />
 
       <svg
+        ref={svgRef}
         className="h-[100vh] w-[100vw]"
         onWheel={onWheel}
         onPointerMove={onPointerMove}

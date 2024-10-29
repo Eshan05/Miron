@@ -4,7 +4,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 
-import { Menu } from "lucide-react";
+import { ImageDown, Menu } from "lucide-react";
 import { Poppins } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,8 +21,11 @@ const font = Poppins({
   weight: ["600"],
 });
 
-type InfoProps = { boardId: string; };
-export const Info = ({ boardId }: InfoProps) => {
+type InfoProps = {
+  boardId: string;
+  exportAsPng?: () => void;
+};
+export const Info = ({ boardId, exportAsPng }: InfoProps) => {
   const { onOpen } = useRenameModal();
   const data = useQuery(api.board.get, { id: boardId as Id<"boards">, });
 
@@ -63,6 +66,12 @@ export const Info = ({ boardId }: InfoProps) => {
         </Button>
       </Hint>
 
+      <TabSeparator />
+      <Hint label="Export as PNG" side="bottom" sideOffset={10}>
+        <Button size="icon" variant="board" onClick={exportAsPng}>
+          <ImageDown />
+        </Button>
+      </Hint>
       <TabSeparator />
 
       <Actions id={data._id} title={data.title} side="bottom" sideOffset={10}>
