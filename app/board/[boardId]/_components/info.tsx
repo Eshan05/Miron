@@ -14,6 +14,7 @@ import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRenameModal } from "@/store/use-rename-modal";
+import { ToolButtonSkeleton } from "./tool-button";
 
 const TabSeparator = () => <div className="text-neutral-300 px-1.5">|</div>;
 const font = Poppins({
@@ -72,7 +73,7 @@ export const Info = ({ boardId, exportAsPng }: InfoProps) => {
           <ImageDown />
         </Button>
       </Hint>
-      <TabSeparator />
+      {/* <TabSeparator /> */}
 
       <Actions id={data._id} title={data.title} side="bottom" sideOffset={10}>
         <div className="">
@@ -92,6 +93,44 @@ export const InfoSkeleton = () => {
     <div
       className="w-[300px] absolute top-2 left-2 bg-white rounded-md px-1.5 h-12 flex items-center shadow-md"
       aria-hidden
-    />
+    >
+      <Hint label="Go to boards" side="bottom" sideOffset={10}>
+        <Button variant="board" className="px-2" asChild>
+          <Link href="/">
+            <Image
+              src="/logo.svg"
+              alt="Miro Clone Logo"
+              height={36}
+              width={36}
+              className="brightness-50 opacity-50"
+            />
+            <span
+              className={cn(
+                "font-semibold text-xl ml-2 text-neutral-300",
+                font.className,
+              )}
+            >
+              Miro
+            </span>
+          </Link>
+        </Button>
+      </Hint>
+      <TabSeparator />
+
+      <LineSkeleton width="[100px]" />
+
+      <TabSeparator />
+      <ToolButtonSkeleton />
+      <ToolButtonSkeleton />
+    </div>
   );
 };
+
+const LineSkeleton = ({ width }: { width: string }) => {
+  return (
+    <div
+      className={`flex flex-col gap-y-4 bg-[#f1f2f5] w-${width} h-[1.75rem] rounded-lg`}
+      aria-hidden
+    />
+  );
+}

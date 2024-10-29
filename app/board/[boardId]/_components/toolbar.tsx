@@ -13,7 +13,7 @@ import {
   Undo2,
 } from "lucide-react";
 import { CanvasMode, LayerType, type CanvasState } from "@/types/canvas";
-import { ToolButton } from "./tool-button";
+import { ToolButton, ToolButtonSkeleton } from "./tool-button";
 
 type ToolbarProps = {
   canvasState: CanvasState;
@@ -246,9 +246,22 @@ export const Toolbar = ({
 
 export const ToolbarSkeleton = () => {
   return (
-    <div
-      className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4 bg-white h-[360px] w-[52px] shadow-md rounded-md"
-      aria-hidden
-    />
+    <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
+      <div
+        className="bg-white rounded-md p-1.5 flex gap-y-2 flex-col items-center justify-center shadow-md"
+        aria-hidden
+      >
+        <ToolButtonSkeleton />
+        <ToolButtonSkeleton />
+        <ToolButtonSkeleton />
+        <ToolButtonSkeleton />
+        <ToolButtonSkeleton />
+        <ToolButtonSkeleton />
+      </div>
+      <div className="bg-white rounded-md p-1.5 flex gap-y-2 flex-col items-center justify-center shadow-md">
+        <ToolButtonSkeleton />
+        <ToolButtonSkeleton />
+      </div>
+    </div>
   );
 };

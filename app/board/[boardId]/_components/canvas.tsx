@@ -526,7 +526,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
   return (
     <main
-      className="h-full w-full relative bg-neutral-200 touch-none">
+      className="h-full w-full relative bg-[#f2f2f2] touch-none">
       <Info boardId={boardId} exportAsPng={exportAsPng} />
       <Participants />
       <Toolbar

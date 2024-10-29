@@ -34,3 +34,13 @@ export const ToolButton = ({
     </Hint>
   );
 };
+
+export const ToolButtonSkeleton = () => {
+  return (
+    <div
+      className="flex flex-col gap-y-4 bg-[#f1f2f5] w-10 aspect-square rounded-full"
+      style={{ background: 'radial-gradient(circle, #f1f2f5 50%, transparent 50%)' }}
+      aria-hidden
+    />
+  );
+}
