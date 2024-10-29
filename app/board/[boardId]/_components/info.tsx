@@ -129,7 +129,7 @@ export const InfoSkeleton = () => {
 const LineSkeleton = ({ width }: { width: string }) => {
   return (
     <div
-      className={`flex flex-col gap-y-4 bg-[#f1f2f5] w-${width} h-[1.75rem] rounded-lg`}
+      className={`flex flex-col gap-y-4 bg-[#f1f2f5] w-[100px] h-[1.75rem] rounded-lg`}
       aria-hidden
     />
   );

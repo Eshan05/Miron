@@ -51,9 +51,10 @@ An online whiteboard for teams/organizations allowing for realtime collaboration
 - **🔒 Authentication**: Secure Authentication using Clerk for Google and Github
 - **🎨 Intuitive UI**: Minimal clean UI, Loading indicators, toasts, tooltips and more
 - **🏢 Organization Support**: Switch between organizations/teams and create favorite boards within each
-- **🖌️ Versatile Canvas**: Options to add shapes, text, notes and draw freely with many tools
+- **🖌️ Versatile Canvas**: Options to add shapes, text, notes and draw freely with many tools. Also a **laser** tool 
 - **✏️ Drawing Tools**: Select any layer and change it's color to any color, duplicate it, move to front or back or delete it. Ability to select multiple layers
 - **⌨️ Keyboard Shortcuts**: Use the whiteboard with accessible keyboard shortcuts 
+- **📷 Export as PNG**: Export your board as a PNG!
 
 ## 🤝 Usage
 
@@ -84,8 +85,10 @@ pnpm i
 
 ## 📱 Screenshots
 
-![Image 1](./public/readme/dashboard.png)
-![Image 2](./public/readme/square_color_tooltip.png)
+![Dashboard](./public/readme/dashboard.png)
+![Selection Tools Showcase](./public/readme/square_color_tooltip.png)
+![Simple Laser](./public/readme/laser.png)
+![Skeleton of Canvas](./public/readme/canvas_skeleton.png)
 <!-- ![Image 3](./public/readme/alllayers.png) -->
 
 ## 📄 Additional Notes
