@@ -42,6 +42,7 @@ import { SelectionBox } from "./selection-box";
 import { SelectionTools } from "./selection-tools";
 import { Path } from "./path";
 import { ResetCamera } from "./reset-camera";
+import LaserPointer from "./laser";
 
 import { useDisableScrollBounce } from "@/hooks/use-disable-scroll-bounce";
 import { useDeleteLayers } from "@/hooks/use-delete-layers";
@@ -78,6 +79,11 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     r: 0,
     g: 0,
     b: 0,
+  });
+
+  const [laserPointer, setLaserPointer] = useState<{ points: number[][]; visible: boolean }>({
+    points: [],
+    visible: true,
   });
 
   useDisableScrollBounce();
@@ -311,13 +317,28 @@ export const Canvas = ({ boardId }: CanvasProps) => {
       y: camera.y - e.deltaY,
     }));
   }, []);
+  const prevLaserTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const onPointerMove = useMutation(
     ({ setMyPresence }, e: React.PointerEvent) => {
       e.preventDefault();
       const current = pointerEventToCanvasPoint(e, camera);
 
-      if (canvasState.mode === CanvasMode.Pressing) {
+      if (canvasState.mode === CanvasMode.LaserPointer) {
+        setLaserPointer((prev) => ({
+          points: [...prev.points, [current.x, current.y]],
+          visible: true,
+        }));
+
+        // Clear previous timeout to avoid multiple timers
+        if (prevLaserTimeout.current) {
+          clearTimeout(prevLaserTimeout.current);
+        }
+
+        prevLaserTimeout.current = setTimeout(() => {
+          setLaserPointer((prev) => ({ ...prev, visible: false }));
+        }, 1000);
+      } else if (canvasState.mode === CanvasMode.Pressing) {
         startMultiSelection(current, canvasState.origin);
       } else if (canvasState.mode === CanvasMode.SelectionNet) {
         updateSelection(current, canvasState.origin);
@@ -331,13 +352,16 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
       setMyPresence({ cursor: current });
     },
-    [canvasState,
+    [
+      canvasState,
       resizeSelectedLayer,
       camera,
       translateSelectedLayers,
       startMultiSelection,
       continueDrawing,
-      updateSelection]
+      updateSelection,
+      setLaserPointer,
+    ]
   );
 
   const onPointerLeave = useMutation(({ setMyPresence }) => {
@@ -354,14 +378,30 @@ export const Canvas = ({ boardId }: CanvasProps) => {
         startDrawing(point, e.pressure)
         return;
       }
-      setCanvasState({ origin: point, mode: CanvasMode.Pressing });
+      if (canvasState.mode == CanvasMode.LaserPointer) {
+        setCanvasState({ origin: point, mode: CanvasMode.LaserPointer });
+        setLaserPointer({ points: [[point.x, point.y]], visible: true }); // Initialize points
+      } else {
+        setCanvasState({ origin: point, mode: CanvasMode.Pressing });
+      }
     },
     [camera, canvasState.mode, setCanvasState, startDrawing],
   );
 
+
+  useEffect(() => {
+    return () => {
+      if (prevLaserTimeout.current) {
+        clearTimeout(prevLaserTimeout.current);
+      }
+    };
+  }, []);
   const onPointerUp = useMutation(
     ({ }, e) => {
       const point = pointerEventToCanvasPoint(e, camera);
+      if (canvasState.mode === CanvasMode.LaserPointer) {
+        setLaserPointer({ points: [], visible: false });
+      }
 
       if (
         canvasState.mode === CanvasMode.None ||
@@ -568,6 +608,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
             />
           ))}
           <SelectionBox onResizeHandlePointerDown={onResizeHandlePointerDown} />
+          <LaserPointer points={laserPointer.points} visible={laserPointer.visible} />
           {canvasState.mode === CanvasMode.SelectionNet &&
             canvasState.current != null && (
               <rect

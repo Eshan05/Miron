@@ -119,6 +119,10 @@ export type CanvasState =
     mode: CanvasMode.Resizing;
     initialBounds: XYWH;
     corner: Side;
+  }
+  | {
+    mode: CanvasMode.LaserPointer;
+    origin: Point;
   };
 
 export enum CanvasMode {
@@ -129,6 +133,7 @@ export enum CanvasMode {
   Inserting,
   Resizing,
   Pencil,
+  LaserPointer
 }
 
 export type Layer =
@@ -137,3 +142,8 @@ export type Layer =
   | PathLayer
   | TextLayer
   | NoteLayer;
+
+export type LaserPointerState = {
+  points: number[][];
+  color: Color;
+};

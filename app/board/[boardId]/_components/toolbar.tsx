@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSelf } from "@/liveblocks.config";
 import {
   Circle,
+  LucideScanEye,
   MousePointer2,
   Pencil,
   Redo2,
@@ -111,6 +112,12 @@ export const Toolbar = ({
           console.log("P pressed: Pencil tool activated.");
           break;
 
+        case "l":
+          e.preventDefault();
+          setCanvasState({ origin: { x: 0, y: 0 }, mode: CanvasMode.LaserPointer });
+          console.log("L pressed: Laser Pointer tool activated.");
+          break;
+
         case "z":
           if (e.ctrlKey) {
             e.preventDefault();
@@ -213,6 +220,12 @@ export const Toolbar = ({
             canvasState.layerType === LayerType.Ellipse
           }
         />
+        <ToolButton
+          label={<div className="flex items-center">Laser Pointer<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">L</kbd></div>}
+          icon={LucideScanEye}
+          onClick={() => setCanvasState({ origin: { x: 0, y: 0 }, mode: CanvasMode.LaserPointer })}
+          isActive={canvasState.mode === CanvasMode.LaserPointer}
+        />
 
         <ToolButton
           label={<div className="flex items-center">Pen<kbd className="text-center font-mono px-2 py-1 rounded ml-2 font-semibold inline-block bg-neutral-600/60 !text-xs opacity-80">P</kbd></div>}
@@ -251,6 +264,7 @@ export const ToolbarSkeleton = () => {
         className="bg-white rounded-md p-1.5 flex gap-y-2 flex-col items-center justify-center shadow-md"
         aria-hidden
       >
+        <ToolButtonSkeleton />
         <ToolButtonSkeleton />
         <ToolButtonSkeleton />
         <ToolButtonSkeleton />
