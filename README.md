@@ -88,7 +88,7 @@ pnpm i
 ![Dashboard](./public/readme/dashboard.png)
 ![Selection Tools Showcase](./public/readme/square_color_tooltip.png)
 ![Simple Laser](./public/readme/laser.png)
-![Skeleton of Canvas](./public/readme/canvas_skeleton.png)
+![Skeleton of Canvas](./public/readme/board_skeleton.png)
 <!-- ![Image 3](./public/readme/alllayers.png) -->
 
 ## 📄 Additional Notes
